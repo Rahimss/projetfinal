@@ -210,37 +210,36 @@ def create_matrix_input(rows, cols):
                 matrix.append(row_values)
     return matrix
 
-def main():
-    st.title("Solveur de problème de transport")
-    
-    method = st.selectbox("Méthode:", ["MCNO", "Moindre Cout", "Vogel"])
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        demand = st.text_input("Demande (séparée par des virgules):")
-    with col2:
-        offer = st.text_input("Offre (séparée par des virgules):")
+st.title("Solveur de problème de transport")
 
-    if demand and offer:
-        try:
-            demand_list = list(map(float, demand.split(',')))
-            offer_list = list(map(float, offer.split(',')))
+method = st.selectbox("Méthode:", ["MCNO", "Moindre Cout", "Vogel"])
+
+col1, col2 = st.columns(2)
+with col1:
+    demand = st.text_input("Demande (séparée par des virgules):")
+with col2:
+    offer = st.text_input("Offre (séparée par des virgules):")
+
+if demand and offer:
+    try:
+        demand_list = list(map(float, demand.split(',')))
+        offer_list = list(map(float, offer.split(',')))
+        
+        matrix = create_matrix_input(len(offer_list), len(demand_list))
+        
+        if st.button("Calculer"):
+            if method == "MCNO":
+                quantity, total_cost = MCNO(demand_list, offer_list, matrix)
+            elif method == "Moindre Cout":
+                quantity, total_cost = moindre_cout(demand_list, offer_list, matrix)
+            else:
+                quantity, total_cost = vogel(matrix, offer_list, demand_list)
             
-            matrix = create_matrix_input(len(offer_list), len(demand_list))
+            st.write("Matrice des quantités:")
+            st.write(np.array(quantity))
+            st.write(f"Coût total: {total_cost}")
             
-            if st.button("Calculer"):
-                if method == "MCNO":
-                    quantity, total_cost = MCNO(demand_list, offer_list, matrix)
-                elif method == "Moindre Cout":
-                    quantity, total_cost = moindre_cout(demand_list, offer_list, matrix)
-                else:
-                    quantity, total_cost = vogel(matrix, offer_list, demand_list)
-                
-                st.write("Matrice des quantités:")
-                st.write(np.array(quantity))
-                st.write(f"Coût total: {total_cost}")
-                
-        except ValueError as e:
-            st.error("Veuillez entrer des nombres valides séparés par des virgules")
+    except ValueError as e:
+        st.error("Veuillez entrer des nombres valides séparés par des virgules")
 
 
