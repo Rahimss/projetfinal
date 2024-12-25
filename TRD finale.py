@@ -243,6 +243,4 @@ def main():
         except ValueError as e:
             st.error("Veuillez entrer des nombres valides séparés par des virgules")
 
-if __name__ == "__main__":
-    main()
 
